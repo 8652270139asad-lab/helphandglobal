@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | HelpHand Global Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <style>
+        .login-box { max-width: 400px; margin: 100px auto; background: #112240; padding: 40px; border-radius: 15px; text-align: center; border: 1px solid #233554; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .google-btn { background: white; color: #444; width: 100%; padding: 12px; border-radius: 5px; border: 1px solid #ddd; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 16px; transition: 0.3s; margin-top: 20px;}
+        .google-btn:hover { background: #f1f1f1; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .logo { font-weight: bold; font-size: 24px; color: #64ffda; }
+        .logo span { color: #8892b0; }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <div class="logo">HELPHAND <span>GLOBAL</span></div>
+        <h3 style="color: white; margin-top: 20px;">Secure Investor Login</h3>
+        <p style="font-size: 12px; color: #8892b0; margin-bottom: 30px;">Global citizens ko apni identity verify karne ke liye Google account se sign-in karna anivarya hai.</p>
+        
+        <button class="google-btn" id="loginBtn" onclick="googleLogin()">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20">
+            Sign in with Google
+        </button>
+
+        <p style="font-size: 10px; color: #495670; margin-top: 20px;">Protected by Google reCAPTCHA and HelpHand Privacy Policy.</p>
+    </div>
+
+    <script>
+        // --- APNA FIREBASE CONFIG YAHAN DALO ---
+        const firebaseConfig = {
+            apiKey: "AIzaSy...", // Jo tune pehle bhejatha wahi yahan paste karna
+            authDomain: "helphand-global.firebaseapp.com",
+            projectId: "helphand-global",
+            storageBucket: "helphand-global.appspot.com",
+            messagingSenderId: "...",
+            appId: "..."
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        function googleLogin() {
+            const btn = document.getElementById('loginBtn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
+            btn.disabled = true;
+
+            const provider = new firebase.auth.GoogleAuthProvider();
+            
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    // Login Success!
+                    console.log("User Logged In:", result.user.displayName);
+                    window.location.href = 'home.html'; // User ko main page par bhej do
+                })
+                .catch((error) => {
+                    console.error("Login Error:", error);
+                    alert("Authentication failed! Please try again.");
+                    btn.innerHTML = '<img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20"> Sign in with Google';
+                    btn.disabled = false;
+                });
+        }
+    </script>
+</body>
+</html>

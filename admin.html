@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HHG | Master Admin Audit</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <style>
+        body { background: #0a192f; color: white; font-family: sans-serif; padding: 20px; }
+        .admin-box { max-width: 1000px; margin: auto; }
+        .investor-card { background: #112240; border: 1px solid #64ffda; padding: 20px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-approve { background: #64ffda; color: #0a192f; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-logout { background: transparent; border: 1px solid #f6465d; color: #f6465d; padding: 5px 10px; cursor: pointer; float: right; }
+        .status-tag { padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .paid { background: #64ffda22; color: #64ffda; border: 1px solid #64ffda; }
+        .pending { background: #f6465d22; color: #f6465d; border: 1px solid #f6465d; }
+    </style>
+</head>
+<body>
+
+    <div class="admin-box">
+        <button class="btn-logout" onclick="auth.signOut()">Admin Logout</button>
+        <h1>Master Audit Panel 📊</h1>
+        <p id="adminStatus">Verifying Identity...</p>
+        <hr border-color="#233554">
+        
+        <div id="investorList">
+            </div>
+    </div>
+
+    <script>
+        // Firebase Config (Apna asli config yahan dalo)
+        const firebaseConfig = { 
+            apiKey: "YOUR_API_KEY",
+            projectId: "helphand-global",
+            // ... baaki details
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        const ADMIN_EMAIL = "viefeng27@gmail.com";
+
+        auth.onAuthStateChanged(user => {
+            if (user && user.email === ADMIN_EMAIL) {
+                document.getElementById('adminStatus').innerHTML = `Logged in as: <b>${user.email}</b> (Authorized)`;
+                loadInvestors();
+            } else {
+                alert("Unauthorized Access! Ye page sirf viefeng27@gmail.com ke liye hai.");
+                window.location.href = "index.html"; // Wapas bhej do
+            }
+        });
+
+        function loadInvestors() {
+            db.collection("investor_kyc").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+                const list = document.getElementById('investorList');
+                list.innerHTML = "";
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const statusClass = data.status === "PAID" ? "paid" : "pending";
+                    list.innerHTML += `
+                        <div class="investor-card">
+                            <div>
+                                <h3>${data.name}</h3>
+                                <p>Email: ${data.email} | Phone: ${data.phone}</p>
+                                <p><small>PAN: ${data.pan} | Bank: ${data.acc}</small></p>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="status-tag ${statusClass}">${data.status || 'PENDING'}</div><br><br>
+                                ${data.status !== "PAID" ? `<button class="btn-approve" onclick="approveManual('${doc.id}')">Manual Approve</button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        function approveManual(id) {
+            if(confirm("Confirm Manual Payment Approval?")) {
+                db.collection("investor_kyc").doc(id).update({ status: "PAID" })
+                .then(() => alert("Investor Approved!"));
+            }
+        }
+    </script>
+</body>
+</html>

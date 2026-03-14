@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>KYC Verification | HelpHand Global Official</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+    <style>
+        .kyc-container { max-width: 600px; margin: 40px auto; background: #112240; padding: 30px; border-radius: 12px; border: 1px solid #233554; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; color: #64ffda; margin-bottom: 8px; font-size: 13px; font-weight: bold; }
+        input, select { width: 100%; padding: 12px; background: #0a192f; border: 1px solid #233554; color: white; border-radius: 5px; outline: none; }
+        input:focus { border-color: #64ffda; }
+        .warning-box { background: rgba(246, 70, 93, 0.1); border: 1px solid #f6465d; padding: 15px; border-radius: 8px; margin-bottom: 25px; }
+        .warning-box p { margin: 0; color: #f6465d; font-size: 12px; line-height: 1.6; }
+        .step-indicator { text-align: center; color: #8892b0; font-size: 12px; margin-bottom: 20px; letter-spacing: 2px; }
+        .main-btn { background: #64ffda; color: #0a192f; font-weight: bold; padding: 15px; border-radius: 5px; cursor: pointer; transition: 0.3s; width: 100%; border:none; }
+        .main-btn:disabled { background: #233554; color: #8892b0; }
+    </style>
+</head>
+<body>
+
+    <div class="auth-bar" style="background:#0a192f; color:#64ffda; padding:10px; font-size:10px; text-align:center; border-bottom:1px solid #233554;">
+        <span><i class="fas fa-lock"></i> SECURE 256-BIT ENCRYPTION ACTIVE</span> | 
+        <span>STEP 1 OF 3: IDENTITY AUDIT</span>
+    </div>
+
+    <div class="kyc-container">
+        <div class="step-indicator">GOVERNMENT ID & BANK VERIFICATION</div>
+        
+        <div class="warning-box">
+            <p><strong>ATTENTION:</strong> Aapka KYC Name aur Payment Sender Name ekdum match hona chahiye. Agar mismatch paya gaya toh HelpHand Global system ise "Cyber Fraud" maankar aapka fund freeze kar dega.</p>
+        </div>
+
+        <form id="kycForm">
+            <div class="form-group">
+                <label>FULL NAME (As per Bank/Aadhaar)</label>
+                <input type="text" id="fullName" placeholder="Enter Full Name" required>
+            </div>
+
+            <div style="display: flex; gap: 15px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>FATHER'S NAME</label>
+                    <input type="text" id="fatherName" placeholder="Father's Name" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>MOTHER'S NAME</label>
+                    <input type="text" id="motherName" placeholder="Mother's Name" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>PAN CARD NUMBER</label>
+                <input type="text" id="panNo" maxlength="10" style="text-transform: uppercase;" required>
+            </div>
+
+            <div class="form-group">
+                <label>AADHAAR NUMBER</label>
+                <input type="number" id="aadhaarNo" required>
+            </div>
+
+            <div class="form-group">
+                <label>BANK ACCOUNT NUMBER</label>
+                <input type="number" id="accNo" required>
+            </div>
+
+            <div class="form-group">
+                <label>IFSC CODE</label>
+                <input type="text" id="ifscCode" style="text-transform: uppercase;" required>
+            </div>
+
+            <button type="submit" id="submitBtn" class="main-btn">SUBMIT FOR SYSTEM AUDIT</button>
+        </form>
+    </div>
+
+    <script>
+        // --- REAL FIREBASE CONFIG (ADDED AS REQUESTED) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyCxgc_NttnhW4weri20wnuC98xgMDHTD9k",
+            authDomain: "helphandglobal.firebaseapp.com",
+            projectId: "helphandglobal",
+            storageBucket: "helphandglobal.firebasestorage.app",
+            messagingSenderId: "286256403331",
+            appId: "1:286256403331:web:8f8eea05d8db9bba25dcb6",
+            measurementId: "G-STW69DB8VH"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Check if user is logged in
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // Added || "" to prevent null errors
+                document.getElementById('fullName').value = user.displayName || "";
+            } else {
+                window.location.href = 'home.html';
+            }
+        });
+
+        document.getElementById('kycForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Safety Check: User logged in hai ya nahi
+            if (!auth.currentUser) {
+                alert("Session expired. Please login again.");
+                window.location.href = 'home.html';
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Auditing Data...';
+            btn.disabled = true;
+
+            const userData = {
+                uid: auth.currentUser.uid,
+                email: auth.currentUser.email,
+                name: document.getElementById('fullName').value,
+                father: document.getElementById('fatherName').value,
+                mother: document.getElementById('motherName').value,
+                pan: document.getElementById('panNo').value,
+                aadhaar: document.getElementById('aadhaarNo').value,
+                acc: document.getElementById('accNo').value,
+                ifsc: document.getElementById('ifscCode').value,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            try {
+                // Asli Database (investor_kyc collection) mein save karna
+                await db.collection("investor_kyc").doc(auth.currentUser.uid).set(userData);
+                
+                // Local memory mein save for PDF
+                localStorage.setItem('hhg_user', JSON.stringify(userData));
+
+                // Redirect to Dashboard
+                window.location.href = 'dashboard.html';
+            } catch (error) {
+                console.error("Error saving KYC:", error);
+                alert("Audit Failed! Check Firestore Rules in Console.");
+                btn.innerHTML = 'SUBMIT FOR SYSTEM AUDIT';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
