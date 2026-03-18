@@ -131,7 +131,7 @@
                 // Save to LocalStorage for Payment/Bond page
                 localStorage.setItem('hhg_user', JSON.stringify(userData));
                 
-                window.location.href = 'settlement.html'; // Yahan apne payment page ka naam likhna
+                window.location.href = 'dashboard.html'; // Yahan apne payment page ka naam likhna
             } catch (error) {
                 alert("Database Error: " + error.message);
                 btn.innerHTML = 'VERIFY & PROCEED';
