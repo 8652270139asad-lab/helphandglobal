@@ -6,7 +6,7 @@
     <title>Institutional Dashboard | HelpHand Global Reserve</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --gold: #c5a059; --panel: #0a192f; --white: #e6f1ff; --text-dim: #8892b0; --bg: #020c1b; }
+        :root { --gold: #59b5c5; --panel: #0a192f; --white: #e6f1ff; --text-dim: #8892b0; --bg: #020c1b; }
         body { background: var(--bg); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: var(--white); margin: 0; padding-bottom: 80px; }
         
         /* Header Stats */
@@ -24,7 +24,7 @@
         .opp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         
         /* Card Styling */
-        .opp-card { background: var(--panel); border: 1px solid #233554; border-radius: 12px; padding: 25px; transition: 0.4s; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+        .opp-card { background: var(--panel); border: 1px solid #3f88b3; border-radius: 12px; padding: 25px; transition: 0.4s; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
         .opp-card:hover { border-color: var(--gold); transform: translateY(-8px); box-shadow: 0 15px 35px rgba(0,0,0,0.6); }
         
         .opp-card h3 { color: var(--white); margin: 0; font-size: 17px; font-weight: 600; }
@@ -75,17 +75,17 @@
             <div class="opp-card">
                 <div class="tag">SECURE</div>
                 <h3>Alpha Reserve Bond</h3>
-                <span class="investor-stat"><i class="fas fa-shield-alt"></i> Joined by 14,250+ Investors</span>
+                <span class="investor-stat"><i class="fas fa-shield-alt"></i> 14,250+ DATA_NODES</span>
                 <span class="payout">$800</span>
                 <span class="net-label">Net Maturity (Investment: $300 | 10 Months)</span>
                 <p class="details">Liquidity backed by Sovereign Infrastructure Bonds. High safety rating.</p>
-                <button class="apply-btn" onclick="invest(300, '$800', ' 10 Months')">Allocate Funds</button>
+                <button class="apply-btn" onclick="invest(300, '$800', ' 10 Months')">INITIATE ALLOCATION</button>
             </div>
 
 <div class="opp-card">
     <div class="tag">SECURE</div>
     <h3>Global Alpha Reserve</h3>
-    <span class="investor-count">Joined by 14,250+ Investors</span>
+    <span class="investor-stat"><i class="fas fa-shield-alt"></i> 1,250+ DATA_NODES</span>
     <span class="payout">$300</span>
     <span class="net-return">Net Maturity (Invest: $120 | 8 Months)</span>
     <p class="details">Backed by Sovereign Infrastructure Bonds. Low risk, steady growth.</p>
@@ -95,16 +95,16 @@
 <div class="opp-card">
     <div class="tag">POPULAR</div>
     <h3>Tech Unicorn Seed</h3>
-    <span class="investor-count">Joined by 22,180+ Investors</span>
+    <span class="investor-stat"><i class="fas fa-shield-alt"></i> 22,180+ DATA_NODES</span>
     <span class="payout">$1,200</span>
     <span class="net-return">Net Maturity (Invest: $250 | 2 Years)</span>
     <p class="details">Direct equity in pre-IPO tech ventures. High-growth potential.</p>
-    <button class="applyn-bt-sm" onclick="invest(250, '$1200', '2 Years')">Invest Now</button>
+    <button class="apply-btn" onclick="invest(250, '$1200', '2 Years')">INITIATE ALLOCATION</button>
 </div>
 
 <div class="opp-card">
     <h3>Zurich Capital Yield</h3>
-    <span class="investor-count">Joined by 9,840+ Investors</span>
+    <span class="investor-stat"><i class="fas fa-shield-alt"></i> 9,840+ DATA_NODES</span>
     <span class="payout">$4,500</span>
     <span class="net-return">Net Maturity (Invest: $1,000 | 3 Years)</span>
     <p class="details">Managed under Swiss Arbitrage protocols. Premium institutional plan.</p>
@@ -113,7 +113,7 @@
 
 <div class="opp-card">
     <h3>Bluechip Dividend Fund</h3>
-    <span class="investor-count">Joined by 31,400+ Investors</span>
+    <span class="investor-stat"><i class="fas fa-shield-alt"></i> 31,400+ DATA_NODES</span>
     <span class="payout">$1500</span>
     <span class="net-return">Net Maturity (Invest: $400 | 1 Year)</span>
     <p class="details">Ideal for beginners. Diversified across top-tier global stocks.</p>
@@ -123,7 +123,7 @@
 <div class="opp-card">
     <div class="tag">HOT</div>
     <h3>Real Estate Arbitrage</h3>
-    <span class="investor-count">Joined by 12,600+ Investors</span>
+    <span class="investor-stat"><i class="fas fa-shield-alt"></i> 12,600+ DATA_NODES</span>
     <span class="payout">$6,500</span>
     <span class="net-return">Net Maturity (Invest: $1,500 | 2 Years)</span>
     <p class="details">Fractional ownership in commercial luxury properties worldwide.</p>
@@ -132,7 +132,7 @@
 
 <div class="opp-card">
     <h3>Gold Hedge Reserve</h3>
-    <span class="investor-count">Joined by 8,900+ Investors</span>
+    <span class="investor-stat"><i class="fas fa-shield-alt"></i> 8,900+ DATA_NODES</span>
     <span class="payout">$15,000</span>
     <span class="net-return">Net Maturity (Invest: $3,500 | 2 Years)</span>
     <p class="details">Stability plan hedged against global inflation and currency dips.</p>
@@ -142,7 +142,7 @@
 <div class="opp-card" style="border-color: #4ade80;">
     <div class="tag" style="background: #4ade80;">MONTHLY</div>
     <h3>Wealth Multiplier Pro</h3>
-    <span class="investor-count">Joined by 18,120+ Investors</span>
+    <span class="investor-stat"><i class="fas fa-shield-alt"></i> 18,120+ DATA_NODES</span>
     <span class="payout">$2,400</span>
     <span class="net-return">Maturity (Monthly Invest: $60 | 2.5 Years)</span>
     <p class="details">Small monthly contributions, massive compound returns. ₹2 Lakh equivalent.</p>
@@ -152,7 +152,7 @@
 <div class="opp-card" style="border-color: #f6465d;">
     <div class="tag" style="background: #f6465d;">URGENT</div>
     <h3>Emergency Double Shield</h3>
-    <span class="investor-count">Joined by 22,450+ Investors</span>
+    <span class="investor-stat"><i class="fas fa-shield-alt"></i> 22,450+ DATA_NODES</span>
     <span class="payout">$2500</span>
     <span class="net-return">Net Return (Invest: $350 | 1 Years)</span>
     <p class="details">Tax-adjusted emergency fund. Safe and highly liquid upon maturity.</p>
@@ -162,7 +162,7 @@
 <div class="opp-card">
     <div class="tag">ELITE</div>
     <h3>Future Founders Monthly</h3>
-    <span class="investor-count">Joined by 5,400+ Investors</span>
+    <span class="investor-stat"><i class="fas fa-shield-alt"></i> 5,400+ DATA_NODES</span>
     <span class="payout">$12,000</span>
     <span class="net-return">Maturity (Monthly Invest: $150 | 3 Years)</span>
     <p class="details">Designed for building long-term capital for business startups.</p>
