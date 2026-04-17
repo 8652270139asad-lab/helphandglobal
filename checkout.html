@@ -64,8 +64,8 @@
         const plan = JSON.parse(localStorage.getItem('hhg_plan')) || { investAmt: 100 }; 
         
         let numericDollar = parseFloat(plan.investAmt) || 0;
-        let inrAmount = numericDollar * 84;
-        let upiID = "khanajaz0139@oksbi"; 
+        let inrAmount = numericDollar * 90;
+        let upiID = "jaiswalkishan306@oksbi"; 
 
         document.getElementById('display-amt').innerText = numericDollar;
         document.getElementById('inr-converted').innerText = "₹" + inrAmount.toLocaleString('en-IN');
